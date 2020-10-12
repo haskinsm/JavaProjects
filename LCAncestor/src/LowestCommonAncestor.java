@@ -19,13 +19,13 @@ public class LowestCommonAncestor {
 			return null;
 		}
 		if( root == a || root ==b) {   
-			return root;
+			return root; 
 		}
 		
 		TreeNode left = LCA(root.left, a, b);
 		TreeNode right = LCA(root.right, a, b);
 		
-		//If left && right are not null, this is lca for a and b
+		//If left && right are not null, this 'root' is LCA for a and b
 		if( left!=null && right!=null) {
 			return root;
 		}
