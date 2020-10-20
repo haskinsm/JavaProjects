@@ -35,4 +35,27 @@ class LowestCommonAncestorTest {
         assertEquals(2 , myTree.LCA(myTree.root, myTree.root.left, myTree.root.left.left).data);
         assertEquals(1 , myTree.LCA(myTree.root, myTree.root, myTree.root.left.left).data);
 	}
+	
+	@Test
+	void testEmptyTree() {
+		LowestCommonAncestor myTree = new LowestCommonAncestor();
+		assertEquals(null, myTree.root);
+		assertEquals(null, myTree.LCA(myTree.root, null, null)); 
+		//Not possible to do myTree.root.right as will cause Null Pointer exception
+	}
+	
+	@Test
+	void testNodeNotInTreeCall() { //Will cause errors if its 'parent' node does not exist too
+		LowestCommonAncestor myTree = new LowestCommonAncestor();
+		myTree.root = new TreeNode(1);  
+		assertEquals(null, myTree.root.right);
+		assertEquals(null, myTree.root.left);		
+	}
+	
+	@Test
+	void testNotIntNodeData() { //Won't work for double, but seems to work for chars for some reason
+		LowestCommonAncestor myTree = new LowestCommonAncestor();
+		myTree.root = new TreeNode('c');  
+		assertEquals('c', myTree.root.data);
+	}
 }
