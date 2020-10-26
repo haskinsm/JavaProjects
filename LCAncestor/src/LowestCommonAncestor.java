@@ -1,3 +1,4 @@
+//Test Branching 22222
 //LCA = Lowest Common Ancestor. Presume not allowed to use BST, but would be quicker if was allowed to use that data structure.
 class TreeNode{
 	int data;
