@@ -78,10 +78,42 @@ public class LowestCommonAncestor {
 		}
 		
 		//Might be better to return the key and take in the keys as parameters rather than nodes.
+		//Will have to use a supplemental recursive function
+		//Note: a or b can be the LCA of the pair 
 		public DAGTreeNode DAGLCA(DAGTree myTree, DAGTreeNode a, DAGTreeNode b) {
+			DAGTreeNode headMyTree = myTree.root; 
 			if( myTree == null || a == null || b == null) {
 				return null;
 			}
+			if( headMyTree.data == a.data || headMyTree.data == a.data) {
+				return headMyTree;
+			}
+			return inSubtree(headMyTree, a, b);
+		}
+		
+		public DAGTreeNode inSubtree(DAGTreeNode node, DAGTreeNode a, DAGTreeNode b) {
+			boolean foundA =false;
+			boolean foundB =false;
+			for(int i = 0; i < node.successors.size(); i++) {
+				DAGTreeNode subtree = inSubtree(node.successors.get(i), a, b);
+				
+				if( subtree.data == a.data) {
+					foundA = true;
+				}
+				if( subtree.data == b.data) {
+					foundB = true;
+				}
+				//return node??
+			}
+			
+			if(( foundA && (foundB || node.data == b.data)) || ( foundB && node.data == a.data)) {
+				return node;
+			}
+			
+			if(node.data == a.data && node.data == b.data) {
+				return node;
+			}
+				
 			return null;
 		}
 		
