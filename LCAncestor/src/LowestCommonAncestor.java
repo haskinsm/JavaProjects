@@ -23,6 +23,11 @@ class BinaryTreeNode{
 }
 
 public class LowestCommonAncestor {
+	
+	public boolean foundA;
+	public boolean foundB;
+	public boolean AandBSubtree;
+	
 	public class BinaryTree{
 		BinaryTreeNode root; //****Might set this to null
 		
@@ -81,39 +86,54 @@ public class LowestCommonAncestor {
 		//Will have to use a supplemental recursive function
 		//Note: a or b can be the LCA of the pair 
 		public DAGTreeNode DAGLCA(DAGTree myTree, DAGTreeNode a, DAGTreeNode b) {
-			DAGTreeNode headMyTree = myTree.root; 
+			DAGTreeNode headMyTree = myTree.root;
+			foundA = false;
+			foundB = false;
+			AandBSubtree = false;
+			//If any parameters are null, null is returned
 			if( myTree == null || a == null || b == null) {
 				return null;
 			}
+			//If any of the nodes are the head/root, returns the root
 			if( headMyTree.data == a.data || headMyTree.data == a.data) {
 				return headMyTree;
+			}
+			//If the nodes are the same, returns a
+			if( a.data == b.data) {
+				return a;
 			}
 			return inSubtree(headMyTree, a, b);
 		}
 		
+		//If a LCA cannot be found null is returned
 		public DAGTreeNode inSubtree(DAGTreeNode node, DAGTreeNode a, DAGTreeNode b) {
-			boolean foundA =false;
-			boolean foundB =false;
 			for(int i = 0; i < node.successors.size(); i++) {
 				DAGTreeNode subtree = inSubtree(node.successors.get(i), a, b);
 				
-				if( subtree.data == a.data) {
-					foundA = true;
+				if( foundA && foundB) {
+					if( !AandBSubtree) {
+						AandBSubtree = true;
+						return node;
+					}
+					else {
+						return subtree;
+					}
 				}
-				if( subtree.data == b.data) {
-					foundB = true;
-				}
-				//return node??
 			}
-			
+			/*
 			if(( foundA && (foundB || node.data == b.data)) || ( foundB && node.data == a.data)) {
 				return node;
 			}
-			
-			if(node.data == a.data && node.data == b.data) {
+			*/
+			if( node.data == a.data) {
+				foundA = true;
 				return node;
 			}
-				
+			
+			if( node.data == b.data) {
+				foundB = true;
+				return node;
+			}
 			return null;
 		}
 		
