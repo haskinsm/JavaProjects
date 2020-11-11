@@ -6,7 +6,7 @@ import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
 class LowestCommonAncestorTest {
-
+  
 	@Test
 	void testBinaryTree() {
 		LowestCommonAncestor myLCAClass = new LowestCommonAncestor();
@@ -42,7 +42,7 @@ class LowestCommonAncestorTest {
 	}
 	
 	@Test
-	void testEmptyTree() {
+	void testEmptyBTree() {
 		LowestCommonAncestor myLCAClass = new LowestCommonAncestor();
 		LowestCommonAncestor.BinaryTree myTree = myLCAClass.new BinaryTree();
 		
@@ -52,7 +52,7 @@ class LowestCommonAncestorTest {
 	}
 	
 	@Test
-	void testNodeNotInTreeCall() { //Will cause errors if its 'parent' node does not exist too
+	void testNodeNotInBTreeCall() { //Will cause errors if its 'parent' node does not exist too
 		LowestCommonAncestor myLCAClass = new LowestCommonAncestor();
 		LowestCommonAncestor.BinaryTree myTree = myLCAClass.new BinaryTree();
 		
@@ -67,7 +67,7 @@ class LowestCommonAncestorTest {
 		LowestCommonAncestor.BinaryTree myTree = myLCAClass.new BinaryTree();
 		myTree.root = new BinaryTreeNode('c');  
 		assertEquals('c', myTree.root.data);
-	}
+	} 
 	
 	@Test
 	void testDAG() {
@@ -75,7 +75,7 @@ class LowestCommonAncestorTest {
 		LowestCommonAncestor.DAGTree myTree = myLCAClass.new DAGTree(); //myTee constructed & shown below in comments
 		
 		assertEquals(null, myTree.root);
-		/*  Node(<parents>)   
+		 /* Node(<parents>)   
 		 *                1
 		 *         2(1)        3(1)
 		 *         4(2)
@@ -98,8 +98,8 @@ class LowestCommonAncestorTest {
 		assertEquals(6, myTree.root.successors.get(0).successors.get(0).successors.get(1).data);
 		assertEquals(6, myTree.root.successors.get(1).successors.get(0).data);
 		assertEquals(7, myTree.root.successors.get(1).successors.get(1).data);
-	}
-	
+	} 
+	 
 	@Test
 	void testDAGLCA() {
 		LowestCommonAncestor myLCAClass = new LowestCommonAncestor();
@@ -143,17 +143,23 @@ class LowestCommonAncestorTest {
 		 * Node(<Parent>)
 		 * 			1
 		 * 		2		3
-		 *   4	  5
+		 *   4	  5    6
 		 */
+		
 		myTree.addNode(null, 1);
 		myTree.addNode(new ArrayList<DAGTreeNode>(Arrays.asList(myTree.root)), 2);	
 		myTree.addNode(new ArrayList<DAGTreeNode>(Arrays.asList(myTree.root)), 3);
 		myTree.addNode(new ArrayList<DAGTreeNode>(Arrays.asList(myTree.root.successors.get(0))), 4);
 		myTree.addNode(new ArrayList<DAGTreeNode>(Arrays.asList(myTree.root.successors.get(0))), 5);
+		myTree.addNode(new ArrayList<DAGTreeNode>(Arrays.asList(myTree.root.successors.get(1))), 6);
 		
 		//LCA of 2 and 3 should be 1
 		assertEquals(1, myTree.DAGLCA(myTree, myTree.root.successors.get(0), myTree.root.successors.get(1)).data);
 		//LCA of 4 and 5, should be 2
 		assertEquals(2, myTree.DAGLCA(myTree, myTree.root.successors.get(0).successors.get(0), myTree.root.successors.get(0).successors.get(1)).data);
+		//LCA of 5 and 3 should be 1
+		assertEquals(1, myTree.DAGLCA(myTree, myTree.root.successors.get(0).successors.get(1), myTree.root.successors.get(1)).data);
+		//LCA of 5 and 6 should be 1
+		assertEquals(1, myTree.DAGLCA(myTree, myTree.root.successors.get(0).successors.get(1), myTree.root.successors.get(1).successors.get(0)).data);
 	}
 }

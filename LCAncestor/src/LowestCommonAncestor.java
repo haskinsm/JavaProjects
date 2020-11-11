@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-//Test Branching
+
 //LCA = Lowest Common Ancestor. Presume not allowed to use BST, but would be quicker if was allowed to use that data structure.
 class DAGTreeNode{
 	int data;
@@ -24,14 +24,12 @@ class BinaryTreeNode{
 
 public class LowestCommonAncestor {
 	
-	public boolean foundA;
-	public boolean foundB;
-	public boolean AandBSubtree;
+	public boolean AandBFound;
 	
 	public class BinaryTree{
-		BinaryTreeNode root; //****Might set this to null
+		BinaryTreeNode root; 
 		
-		//Say if b is higher up, and on the same side of the tree, than a, b will be LCA
+		//Say if b is higher up than a, and on the same side of the tree as a, b will be LCA
 		public BinaryTreeNode LCA( BinaryTreeNode root, BinaryTreeNode a, BinaryTreeNode b) {
 			if( root == null) {
 				return null;
@@ -57,9 +55,9 @@ public class LowestCommonAncestor {
 		}
 	}
 	
-	//Might be better to include DAGTreeNode class in the below class
+	
 	public class DAGTree{
-		DAGTreeNode root = null; //////
+		DAGTreeNode root = null; 
 		
 		public void addNode(ArrayList<DAGTreeNode> parentsOfNode, int key) {
 			DAGTreeNode node = new DAGTreeNode(key);
@@ -75,6 +73,7 @@ public class LowestCommonAncestor {
 			}
 		}
 		
+		//Didn't end up using the below method anywhere, but left it in in case becomes useful in the future
 		public ArrayList<DAGTreeNode> getSuccessors(DAGTreeNode node){
 			if(node != null) {
 				return node.successors;
@@ -82,14 +81,11 @@ public class LowestCommonAncestor {
 			return null;
 		}
 		
-		//Might be better to return the key and take in the keys as parameters rather than nodes.
-		//Will have to use a supplemental recursive function
 		//Note: a or b can be the LCA of the pair 
 		public DAGTreeNode DAGLCA(DAGTree myTree, DAGTreeNode a, DAGTreeNode b) {
 			DAGTreeNode headMyTree = myTree.root;
-			foundA = false;
-			foundB = false;
-			AandBSubtree = false;
+			AandBFound = false; 
+			
 			//If any parameters are null, null is returned
 			if( myTree == null || a == null || b == null) {
 				return null;
@@ -105,40 +101,59 @@ public class LowestCommonAncestor {
 			return inSubtree(headMyTree, a, b);
 		}
 		
-		//If a LCA cannot be found null is returned
+		// If a LCA cannot be found null is returned, but because of my implementation
+		// would get null pinter errors (In my tests). Perhaps a better way to go about this problem would
+		// have been to take in keys rather than nodes, and return the LCA's key.
+		// Would need an extra method to find the node which has the key x though.
+		// Could then have meaningful output if null is returned rather than null pointer exceptions
+		// I get the null pointer errors from assertEquals(......., null.data) in my tests. (When the LCA is Null)
+		
 		public DAGTreeNode inSubtree(DAGTreeNode node, DAGTreeNode a, DAGTreeNode b) {
+			boolean foundA = false;
+			boolean foundB = false;
 			for(int i = 0; i < node.successors.size(); i++) {
 				DAGTreeNode subtree = inSubtree(node.successors.get(i), a, b);
 				
-				if( foundA && foundB) {
-					if( !AandBSubtree) {
-						AandBSubtree = true;
-						return node;
-					}
-					else {
+				if( subtree != null) {
+					// The below if statement is needed so that the correct answer is returned if both A and B have been found
+					// The bottom if statement will not exit the method fully, but will 
+					// set subtree = node (node here is the LCA, i.e. the correct answer)
+					// so it is then necessary to return the subtree which will fully exit the method so to say.
+					if( AandBFound) {
 						return subtree;
 					}
+					if( subtree.data == a.data) {
+						foundA = true;
+					}
+					if( subtree.data == b.data) {
+						foundB = true;
+					}
+					if( foundA && foundB) {
+						AandBFound = true;
+						return node;
+					}
 				}
+
 			}
-			/*
-			if(( foundA && (foundB || node.data == b.data)) || ( foundB && node.data == a.data)) {
-				return node;
-			}
-			*/
+		
 			if( node.data == a.data) {
-				foundA = true;
 				return node;
 			}
 			
 			if( node.data == b.data) {
-				foundB = true;
 				return node;
 			}
+			
+			//The below if statements are needed to ensure that it is recorded that say nodeA is in the subtree
+			//So when say node a is returned, foundA will be true for all its ancestors.
+			if( foundA) { 
+				return a;
+			}
+			if(foundB) {
+				return b;
+			}
 			return null;
-		}
-		
-		
-		
+		}		
 	}
 }
 
