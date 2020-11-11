@@ -115,7 +115,8 @@ public class LowestCommonAncestor {
 				DAGTreeNode subtree = inSubtree(node.successors.get(i), a, b);
 				
 				if( subtree != null) {
-					// The below if statement is needed so that the correct answer is returned if both A and B have been found
+					// The immediately below if statement is needed so that the correct answer is returned
+					// if both A and B have been found
 					// The bottom if statement will not exit the method fully, but will 
 					// set subtree = node (node here is the LCA, i.e. the correct answer)
 					// so it is then necessary to return the subtree which will fully exit the method so to say.
